@@ -71,7 +71,7 @@ def auth(password: str, password_hash: str, response: Response):
 
 #zajęcia 1 - praca domowa z4
 app.id = 0
-@app.post("/register")
+@app.post("/register", status_code=201)
 def register(json_data: dict):
     name = json_data["name"]
     surname = json_data["surname"]
