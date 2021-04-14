@@ -7,9 +7,9 @@ app.counter = 0
 class HelloResp(BaseModel):
     msg: str
 
-@app.get("/") #dekorator - widok odpowiedzi na metodę get, ścieżka domyslna
+@app.get("/") #endpoint pod główną ścieżką. @ to dekorator - widok odpowiedzi na metodę get, ścieżka domyslna
 def root():
-    return {"message": "Hello World"}
+    return {"message": "Hello world!"}
 
 # @app.get("/hello/{name}") # obsługa GET z parametrem
 # def hello_name_view(name: str):
