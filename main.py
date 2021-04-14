@@ -3,6 +3,8 @@ from fastapi.exceptions import RequestValidationError # praca domowa 1.3
 from fastapi.responses import PlainTextResponse # praca domowa 1.3
 from pydantic import BaseModel
 import hashlib #sha512 - praca domowa 1.3
+import datetime
+
 
 app = FastAPI()
 app.counter = 0
@@ -65,3 +67,24 @@ def auth(password: str, password_hash: str, response: Response):
         return True
     response.status_code = 401
     return False
+
+
+#zajęcia 1 - praca domowa z4
+app.id = 0
+@app.post("/register")
+def register(json_data: dict):
+    name = json_data["name"]
+    surname = json_data["surname"]
+    app.id += 1
+
+    date = datetime.datetime.now()
+    date_v = date + datetime.timedelta(days=(len(name)+len(surname)))
+    date_v = date_v.strftime("%Y-%m-%d")
+    date = date.strftime("%Y-%m-%d")
+    return {
+            "id": app.id,
+            "name": name,
+            "surname": surname,
+            "register_date": date,
+            "vaccination_date": date_v
+            }
