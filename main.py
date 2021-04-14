@@ -24,3 +24,25 @@ def counter():
 @app.get("/hello/{name}", response_model=HelloResp)
 def read_item(name: str):
     return HelloResp(msg=f"Hello {name}")
+
+
+#zajęcia1 - praca domowa z2
+@app.get("/method")
+def method_get():
+    return {"method": "GET"}
+
+@app.post("/method", status_code=201)
+def method_post():
+    return {"method": "POST"}
+
+@app.delete("/method")
+def method_delete():
+    return {"method": "DELETE"}
+
+@app.put("/method")
+def method_put():
+    return {"method": "PUT"}
+
+@app.options("/method")
+def method_options():
+    return {"method": "OPTIONS"}
