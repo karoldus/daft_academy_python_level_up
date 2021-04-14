@@ -1,5 +1,8 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Response
+from fastapi.exceptions import RequestValidationError # praca domowa 1.3
+from fastapi.responses import PlainTextResponse # praca domowa 1.3
 from pydantic import BaseModel
+import hashlib #sha512 - praca domowa 1.3
 
 app = FastAPI()
 app.counter = 0
@@ -46,3 +49,19 @@ def method_put():
 @app.options("/method")
 def method_options():
     return {"method": "OPTIONS"}
+
+
+#zajęcia 1 - praca domowa z3
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request, exc):
+    return PlainTextResponse(str(exc), status_code=401)
+
+@app.get("/auth")
+def auth(password: str, password_hash: str, response: Response):
+    h = hashlib.sha512(password.encode())
+    if password_hash == h.hexdigest():
+        response.status_code = 204
+        return True
+    response.status_code = 401
+    return False
