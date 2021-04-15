@@ -80,6 +80,7 @@ def number_of_letters(word):
 
 
 app.id = 0
+app.patients = []
 @app.post("/register", status_code=201)
 def register(json_data: dict):
     name = json_data["name"]
@@ -90,10 +91,12 @@ def register(json_data: dict):
     date_v = date + datetime.timedelta(days=(number_of_letters(name)+number_of_letters(surname)))
     date_v = date_v.strftime("%Y-%m-%d")
     date = date.strftime("%Y-%m-%d")
-    return {
+    new_patient = {
             "id": app.id,
             "name": name,
             "surname": surname,
             "register_date": date,
             "vaccination_date": date_v
             }
+    app.patients.append(new_patient)
+    return new_patient
