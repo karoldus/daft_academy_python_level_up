@@ -70,6 +70,15 @@ def auth(password: str, password_hash: str, response: Response):
 
 
 #zajęcia 1 - praca domowa z4
+
+def number_of_letters(word):
+    ans = 0
+    for char in word:
+        if char.isalpha():
+            ans += 1
+    return ans
+
+
 app.id = 0
 @app.post("/register", status_code=201)
 def register(json_data: dict):
@@ -78,7 +87,7 @@ def register(json_data: dict):
     app.id += 1
 
     date = datetime.datetime.now()
-    date_v = date + datetime.timedelta(days=(len(name)+len(surname)-name.count('-')-surname.count('-')-name.count(' ')-surname.count(' ')))
+    date_v = date + datetime.timedelta(days=(number_of_letters(name)+number_of_letters(surname)))
     date_v = date_v.strftime("%Y-%m-%d")
     date = date.strftime("%Y-%m-%d")
     return {
