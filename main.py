@@ -78,7 +78,7 @@ def register(json_data: dict):
     app.id += 1
 
     date = datetime.datetime.now()
-    date_v = date + datetime.timedelta(days=(len(name)+len(surname)))
+    date_v = date + datetime.timedelta(days=(len(name)+len(surname)-name.count('-')-surname.count('-')-name.count(' ')-surname.count(' ')))
     date_v = date_v.strftime("%Y-%m-%d")
     date = date.strftime("%Y-%m-%d")
     return {
