@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Response
+from fastapi import FastAPI, Response, HTTPException
 from fastapi.exceptions import RequestValidationError # praca domowa 1.3
 from fastapi.responses import PlainTextResponse # praca domowa 1.3
 from pydantic import BaseModel
@@ -65,7 +65,7 @@ def auth(password: str, password_hash: str, response: Response):
     if password_hash == h.hexdigest():
         response.status_code = 204
         return True
-    response.status_code = 401
+    response.status_code = 401 #lepiej HTTPException
     return False
 
 
@@ -105,13 +105,11 @@ def register(json_data: dict):
 @app.get('/patient/{id}', status_code=200)
 def patient(id: int, response: Response):
     if id < 1:
-        response.status_code = 400
-        return False
+        raise HTTPException(status_code=400, detail="ID must be > 0")
     else:
         for p in app.patients:
             if p['id'] == id:
                 return p
         
-        response.status_code = 404
-        return False
+        raise HTTPException(status_code=404, detail="Wrong ID")  # from fastapi import FastAPI, Header, HTTPException
 
