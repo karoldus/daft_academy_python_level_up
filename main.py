@@ -100,3 +100,18 @@ def register(json_data: dict):
             }
     app.patients.append(new_patient)
     return new_patient
+
+#zajęcia 1 - praca domowa z5
+@app.get('/patient/{id}', status_code=200)
+def patient(id: int, response: Response):
+    if id < 1:
+        response.status_code = 400
+        return False
+    else:
+        for p in app.patients:
+            if p['id'] == id:
+                return p
+        
+        response.status_code = 404
+        return False
+
