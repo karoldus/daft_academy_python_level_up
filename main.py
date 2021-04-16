@@ -61,7 +61,7 @@ async def validation_exception_handler(request, exc):
 
 @app.get("/auth", status_code=401)
 def auth(password: str, password_hash: str, response: Response, request: Request):
-    if ' ' in password:
+    if ' ' in password or password == Null:
         raise HTTPException(status_code=401, detail="Wrong password")
     h = hashlib.sha512(password.encode())
     if password_hash == h.hexdigest():
