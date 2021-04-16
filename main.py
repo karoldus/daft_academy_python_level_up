@@ -4,6 +4,7 @@ from fastapi.responses import PlainTextResponse # praca domowa 1.3
 from pydantic import BaseModel
 import hashlib #sha512 - praca domowa 1.3
 import datetime
+import urllib.parse #pd 1.3
 
 
 app = FastAPI()
@@ -54,20 +55,17 @@ def method_options():
 
 
 #zajęcia 1 - praca domowa z3
-
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request, exc):
     return PlainTextResponse(str(exc), status_code=401)
 
 @app.get("/auth")
 def auth(password: str, password_hash: str, response: Response):
-    h = hashlib.sha512(password.encode())
+    h = hashlib.sha512(urllib.parse.unquote_plus(password).encode())
     if password_hash == h.hexdigest():
         response.status_code = 204
         return True
-    response.status_code = 401 #lepiej HTTPException
-    return False
-
+    raise HTTPException(status_code=401, detail="Wrong password")
 
 #zajęcia 1 - praca domowa z4
 
