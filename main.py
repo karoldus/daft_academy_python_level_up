@@ -113,3 +113,81 @@ def patient(id: int, response: Response):
         
         raise HTTPException(status_code=404, detail="Wrong ID")  # from fastapi import FastAPI, Header, HTTPException
 
+
+
+
+
+
+# zajęcia 3
+
+
+
+
+
+
+from fastapi import Request
+
+# wypisywanie zawartości query params
+
+# @app.get("/request_query_string_discovery/")
+# def read_item(request: Request):
+#     print(f"{request.query_params=}")
+#     return request.query_params
+
+from typing import List
+from fastapi import FastAPI, Query
+
+# zwraca wartość parametrów u i q z query params
+@app.get("/request_query_string_discovery/")
+def read_items(u: str = Query("default"), q: List[str] = Query(None)): #przyjmujemy parametry u i q, które są str. Domyślna wartość u to default, a q to None. q to lista, więc po wpisaniu q=a&q=b otrzymujemy "q":["a","b"]. u nie jest listą, więc przyjmuje tylko jedną wartość - ostatnią podaną. Analogicznie mogą być innymi typami np: int
+    query_items = {"q": q, "u": u}
+    return query_items
+
+
+
+# zwracanie HTML statycznego
+from fastapi.responses import HTMLResponse
+
+@app.get("/static", response_class=HTMLResponse) # będziemy zwacać HTML: response_class=HTMLResponse
+def index_static():
+    return """
+    <html>
+        <head>
+            <title>Some HTML in here</title>
+        </head>
+        <body>
+            <h1>Look ma! HTML!</h1>
+        </body>
+    </html>
+    """
+
+
+# jinja2
+from fastapi.templating import Jinja2Templates
+
+templates = Jinja2Templates(directory="templates")
+
+@app.get("/jinja")
+def read_item(request: Request):
+    return templates.TemplateResponse("index.html.j2", { # nazwa stworzonej przez nas templatki
+        "request": request, "my_string": "Wheeeee!", "my_list": [0, 1, 2, 3, 4, 5]}) # parametry przekazywane do templatki
+
+
+# routing dynamiczny
+
+@app.get("/simple_path_tmpl/{sample_variable}")
+def simple_path_tmpl(sample_variable: str):
+    print(f"{sample_variable=}")
+    print(type(sample_variable))
+    return {"sample_variable": sample_variable} 
+
+
+
+# zadania domowe po zajęciach 3
+
+#3.1 
+@app.get("/hello")
+def hello_html(request: Request):
+    date = datetime.datetime.now()
+    date = date.strftime("%Y-%m-%d")
+    return templates.TemplateResponse("hello.html.j2", {"request": request, "today_date": date})
