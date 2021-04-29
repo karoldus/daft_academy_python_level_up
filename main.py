@@ -203,8 +203,8 @@ from fastapi import Cookie
 
 security = HTTPBasic() # do użycia BasicAuth
 
-app.last_login_session = " "
-app.last_login_token = " "
+app.last_login_session = ""
+app.last_login_token = ""
 
 @app.post("/login_session", status_code=201)
 def login_session(response: Response, credentials: HTTPBasicCredentials = Depends(security)): # pobiera user i password za pomocą BasicAuth
@@ -236,7 +236,7 @@ from fastapi.responses import PlainTextResponse
 
 @app.get("/welcome_session")
 def welcome_session(format:str = "", session_token: str = Cookie(None)):
-    if session_token != app.last_login_session and session_token != app.last_login_token:
+    if session_token != app.last_login_session:
         raise HTTPException(status_code=401)
     if format == "json":
         return {"message": "Welcome!"}
@@ -249,7 +249,7 @@ def welcome_session(format:str = "", session_token: str = Cookie(None)):
 
 @app.get("/welcome_token")
 def welcome_token(token: str = "", format: str = ""):
-    if (token == "") or (token != app.last_login_token and token != app.last_login_session):
+    if (token == "") or (token != app.last_login_token):
         raise HTTPException(status_code=401)
     if format == "json":
         return {"message": "Welcome!"}
@@ -257,3 +257,37 @@ def welcome_token(token: str = "", format: str = ""):
         return HTMLResponse(content="<h1>Welcome!</h1>", status_code=200)
     else:
         return PlainTextResponse(content="Welcome!", status_code=200)
+
+
+# 3.4 - wylogowywanie
+from fastapi.responses import RedirectResponse
+
+@app.delete("/logout_session")
+def logout_session(format:str = "", session_token: str = Cookie(None)):
+    if session_token != app.last_login_session and session_token != app.last_login_token:
+        raise HTTPException(status_code=401)
+
+    app.last_login_session = ""
+    url = "/logged_out?format=" + format
+    return RedirectResponse(url=url, status_code=303)
+
+
+
+@app.delete("/logout_token")
+def logout_token(token: str = "", format: str = ""):
+    if (token == "") or (token != app.last_login_token and token != app.last_login_session):
+        raise HTTPException(status_code=401)
+
+    app.last_login_token = ""
+    url = "/logged_out?format=" + format
+    return RedirectResponse(url=url, status_code=303)
+
+
+@app.get("/logged_out", status_code=200)
+def logged_out(format:str = ""):
+    if format == "json":
+        return {"message": "Logged out!"}
+    elif format == "html":
+        return HTMLResponse(content="<h1>Logged out!</h1>", status_code=200)
+    else:
+        return PlainTextResponse(content="Logged out!", status_code=200)
