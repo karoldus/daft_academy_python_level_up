@@ -206,7 +206,7 @@ security = HTTPBasic() # do użycia BasicAuth
 app.last_login_session = " "
 app.last_login_token = " "
 
-@app.post("/login_session")
+@app.post("/login_session", status_code=201)
 def login_session(response: Response, credentials: HTTPBasicCredentials = Depends(security)): # pobiera user i password za pomocą BasicAuth
     #return {"username": credentials.username, "password": credentials.password} # wydobywanie user i password
     correct_username = secrets.compare_digest(credentials.username, "4dm1n")
@@ -219,7 +219,7 @@ def login_session(response: Response, credentials: HTTPBasicCredentials = Depend
     return {"OK"}
 
 
-@app.post("/login_token")
+@app.post("/login_token", status_code=201)
 def login_token(credentials: HTTPBasicCredentials = Depends(security)):
     correct_username = secrets.compare_digest(credentials.username, "4dm1n")
     correct_password = secrets.compare_digest(credentials.password, "NotSoSecurePa$$")
