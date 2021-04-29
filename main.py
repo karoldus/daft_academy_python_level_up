@@ -248,8 +248,8 @@ def welcome_session(format:str = "", session_token: str = Cookie(None)):
 
 
 @app.get("/welcome_token")
-def welcome_token(session_token: str = "", format: str = ""):
-    if (session_token == "") or (session_token != app.last_login_token and session_token != app.last_login_session):
+def welcome_token(token: str = "", format: str = ""):
+    if (token == "") or (token != app.last_login_token and token != app.last_login_session):
         raise HTTPException(status_code=401)
     if format == "json":
         return {"message": "Welcome!"}
