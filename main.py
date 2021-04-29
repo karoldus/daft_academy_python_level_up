@@ -228,4 +228,32 @@ def login_token(credentials: HTTPBasicCredentials = Depends(security)):
     session_token = hashlib.sha256(f"{credentials.username} + {credentials.password}".encode()).hexdigest()
     app.last_login_token = session_token
     return {"token": session_token}
-    
+
+
+
+# 3.3
+from fastapi.responses import PlainTextResponse
+
+@app.get("/welcome_session")
+def welcome_session(format:str = "", session_token: str = Cookie(None)):
+    if session_token != app.last_login_session:
+        raise HTTPException(status_code=401)
+    if format == "json":
+        return {"message": "Welcome!"}
+    elif format == "html":
+        return HTMLResponse(content="<h1>Welcome!</h1>", status_code=200)
+    else:
+        return PlainTextResponse(content="Welcome!", status_code=200)
+
+
+
+@app.get("/welcome_token")
+def welcome_token(session_token: str = "", format: str = ""):
+    if (session_token == "") or (session_token != app.last_login_token):
+        raise HTTPException(status_code=401)
+    if format == "json":
+        return {"message": "Welcome!"}
+    elif format == "html":
+        return HTMLResponse(content="<h1>Welcome!</h1>", status_code=200)
+    else:
+        return PlainTextResponse(content="Welcome!", status_code=200)
