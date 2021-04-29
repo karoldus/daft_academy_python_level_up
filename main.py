@@ -236,7 +236,7 @@ from fastapi.responses import PlainTextResponse
 
 @app.get("/welcome_session")
 def welcome_session(format:str = "", session_token: str = Cookie(None)):
-    if session_token != app.last_login_session:
+    if session_token != app.last_login_session and session_token != app.last_login_token:
         raise HTTPException(status_code=401)
     if format == "json":
         return {"message": "Welcome!"}
@@ -249,7 +249,7 @@ def welcome_session(format:str = "", session_token: str = Cookie(None)):
 
 @app.get("/welcome_token")
 def welcome_token(session_token: str = "", format: str = ""):
-    if (session_token == "") or (session_token != app.last_login_token):
+    if (session_token == "") or (session_token != app.last_login_token and session_token != app.last_login_session):
         raise HTTPException(status_code=401)
     if format == "json":
         return {"message": "Welcome!"}
