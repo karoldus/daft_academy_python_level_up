@@ -191,3 +191,41 @@ def hello_html(request: Request):
     date = datetime.datetime.now()
     date = date.strftime("%Y-%m-%d")
     return templates.TemplateResponse("hello.html.j2", {"request": request, "today_date": date})
+
+
+
+# 3.2
+
+import secrets
+from fastapi import Depends, FastAPI
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
+from fastapi import Cookie
+
+security = HTTPBasic() # do użycia BasicAuth
+
+app.last_login_session = " "
+app.last_login_token = " "
+
+@app.post("/login_session")
+def login_session(response: Response, credentials: HTTPBasicCredentials = Depends(security)): # pobiera user i password za pomocą BasicAuth
+    #return {"username": credentials.username, "password": credentials.password} # wydobywanie user i password
+    correct_username = secrets.compare_digest(credentials.username, "4dm1n")
+    correct_password = secrets.compare_digest(credentials.password, "NotSoSecurePa$$")
+    if not(correct_password and correct_username):
+        raise HTTPException(status_code=401)
+    session_token = hashlib.sha256(f"{credentials.username} + {credentials.password}".encode()).hexdigest()
+    response.set_cookie(key="session_token", value=session_token)
+    app.last_login_session = session_token
+    return {"OK"}
+
+
+@app.post("/login_token")
+def login_token(credentials: HTTPBasicCredentials = Depends(security)):
+    correct_username = secrets.compare_digest(credentials.username, "4dm1n")
+    correct_password = secrets.compare_digest(credentials.password, "NotSoSecurePa$$")
+    if not(correct_password and correct_username):
+        raise HTTPException(status_code=401)
+    session_token = hashlib.sha256(f"{credentials.username} + {credentials.password}".encode()).hexdigest()
+    app.last_login_token = session_token
+    return {"token": session_token}
+    
