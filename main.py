@@ -505,11 +505,11 @@ async def products(id: int):
 #4.3
 
 @app.get('/employees', status_code=200)
-async def employees(limit: int, offset: int, order: str):
+async def employees(limit: int = -1, offset: int = 0, order: str = 'id'):
     app.db_connection.row_factory = sqlite3.Row
-    if order not in ['first_name', 'last_name', 'city'] or order == None:
-        raise HTTPException(status_code=400)
-    columns = {'first_name' : 'FirstName', 'last_name' : 'LastName', 'city' : 'City'}
+    columns = {'first_name' : 'FirstName', 'last_name' : 'LastName', 'city' : 'City', 'id' : 'EmployeeID'}
+    if order not in columns.keys():
+        raise HTTPException(status_code=400) 
     order = columns[order]
     data = app.db_connection.execute(f"SELECT EmployeeID, LastName, FirstName, City FROM Employees ORDER BY {order} LIMIT ? OFFSET ?",(limit, offset, )).fetchall()
     return {"employees": [{"id": x['EmployeeID'],"last_name":x['LastName'],"first_name":x['FirstName'],"city":x['City']} for x in data]}
