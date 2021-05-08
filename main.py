@@ -501,3 +501,15 @@ async def products(id: int):
     if data == None:
         raise HTTPException(status_code=404)
     return {"id": id, "name": data['ProductName']}
+
+#4.3
+
+@app.get('/employees', status_code=200)
+async def employees(limit: int, offset: int, order: str):
+    app.db_connection.row_factory = sqlite3.Row
+    if order not in ['first_name', 'last_name', 'city'] or order == None:
+        raise HTTPException(status_code=400)
+    columns = {'first_name' : 'FirstName', 'last_name' : 'LastName', 'city' : 'City'}
+    order = columns[order]
+    data = app.db_connection.execute("SELECT EmployeeID, LastName, FirstName, City FROM Employees ORDER BY ? LIMIT ? OFFSET ?",(order, limit, offset, )).fetchall()
+    return {"employees": [{"id": x['EmployeeID'],"last_name":x['LastName'],"first_name":x['FirstName'],"city":x['City']} for x in data]}
