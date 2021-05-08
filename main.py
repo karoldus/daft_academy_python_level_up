@@ -396,3 +396,97 @@ def logged_out(format:str = ""):
     else:
         return PlainTextResponse(content="Logged out!", status_code=200)
 
+
+
+
+
+
+#zajęcia 4
+
+
+
+
+import sqlite3
+
+# łączenie się z bazą przy uruchamianiu apki
+@app.on_event("startup")
+async def startup():
+    app.db_connection = sqlite3.connect("northwind.db")
+    app.db_connection.text_factory = lambda b: b.decode(errors="ignore")  # northwind specific
+
+# analogicznie rozłączenie
+@app.on_event("shutdown")
+async def shutdown():
+    app.db_connection.close()
+
+# with sqlite3.connect("northwind.db") as connection:
+#     connection.text_factory = lambda b: b.decode(errors="ignore") # northwind specific
+#     cursor = connection.cursor() # używamy kursora
+#     products = cursor.execute("SELECT ProductName FROM Products").fetchall()
+#     print(len(products))
+#     print(products[4])
+
+# zamykanie
+# conn.close()
+
+# pobieranie danych z bazy bez kursora
+
+# @app.get("/suppliers/{supplier_id}")
+# async def single_supplier(supplier_id: int):
+#     app.db_connection.row_factory = sqlite3.Row
+#     data = app.db_connection.execute(
+#         f"SELECT CompanyName, Address FROM Suppliers WHERE SupplierID = {supplier_id}").fetchone()
+
+#     return data
+
+# Lepsze sposoby:
+
+# @app.get("/suppliers/{supplier_id}")
+# async def single_supplier(supplier_id: int):
+#     app.db_connection.row_factory = sqlite3.Row
+#     data = app.db_connection.execute(
+#         "SELECT CompanyName, Address FROM Suppliers WHERE SupplierID = ?", (supplier_id, )).fetchone()
+
+#     return data
+# @app.get("/suppliers/{supplier_id}")
+# async def single_supplier(supplier_id: int):
+#     app.db_connection.row_factory = sqlite3.Row
+#     data = app.db_connection.execute(
+#         "SELECT CompanyName, Address FROM Suppliers WHERE SupplierID = :supplier_id",
+#         {'supplier_id': supplier_id}).fetchone()
+
+#     return data
+
+
+@app.get("/employee_with_region")
+async def employee_with_region():
+    app.db_connection.row_factory = sqlite3.Row # Dzięki temu dostęp do pól następuje po nazwie shipper[„CompanyName”] zamiast shipper[0]
+    data = app.db_connection.execute('''
+        SELECT Employees.LastName, Employees.FirstName, Territories.TerritoryDescription 
+        FROM Employees JOIN EmployeeTerritories ON Employees.EmployeeID = EmployeeTerritories.EmployeeID
+        JOIN Territories ON EmployeeTerritories.TerritoryID = Territories.TerritoryID;
+     ''').fetchall()
+    return [{"employee": f"{x['FirstName']} {x['LastName']}", "region": x["TerritoryDescription"]} for x in data]
+
+
+
+
+# praca domowa
+
+# 4.1
+
+@app.get("/categories", status_code=200)
+async def categores():
+    app.db_connection.row_factory = sqlite3.Row
+    data = app.db_connection.execute('''
+    SELECT CategoryID, CategoryName FROM Categories ORDER BY CategoryID
+    ''').fetchall()
+    return {"categories": [{"id": f"{x['CategoryID']}", "name": x["CategoryName"]} for x in data]}
+
+@app.get("/customers", status_code=200)
+async def customers():
+    app.db_connection.row_factory = sqlite3.Row
+    data = app.db_connection.execute('''
+    SELECT CustomerID, CompanyName, Address || ' ' || PostalCode || ' ' || City || ' ' || Country AS full_address FROM Customers ORDER BY CustomerID
+    ''').fetchall()
+    return {"customers": [{"id": f"{x['CustomerID']}", "name": x["CompanyName"], "full_address": (x["full_address"])} for x in data]}
