@@ -481,7 +481,7 @@ async def categores():
     data = app.db_connection.execute('''
     SELECT CategoryID, CategoryName FROM Categories ORDER BY CategoryID
     ''').fetchall()
-    return {"categories": [{"id": f"{x['CategoryID']}", "name": x["CategoryName"]} for x in data]}
+    return {"categories": [{"id": x['CategoryID'], "name": x["CategoryName"]} for x in data]}
 
 @app.get("/customers", status_code=200)
 async def customers():
