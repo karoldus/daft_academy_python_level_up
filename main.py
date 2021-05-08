@@ -490,3 +490,14 @@ async def customers():
     SELECT CustomerID, CompanyName, Address || ' ' || PostalCode || ' ' || City || ' ' || Country AS full_address FROM Customers ORDER BY CustomerID
     ''').fetchall()
     return {"customers": [{"id": f"{x['CustomerID']}", "name": x["CompanyName"], "full_address": (x["full_address"])} for x in data]}
+
+
+# 4.2
+
+@app.get('/products/{id}', status_code=200)
+async def products(id: int):
+    app.db_connection.row_factory = sqlite3.Row
+    data = app.db_connection.execute("SELECT ProductName FROM Products WHERE ProductID = ?",(id,)).fetchone()
+    if data == None:
+        raise HTTPException(status_code=404)
+    return {"id": id, "name": data['ProductName']}
