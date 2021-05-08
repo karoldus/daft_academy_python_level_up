@@ -532,7 +532,7 @@ async def products_id_orders(id: int):
     app.db_connection.row_factory = sqlite3.Row # (UnitPrice x Quantity) - (Discount x (UnitPrice x Quantity))
     data = app.db_connection.execute('''
     SELECT Orders.OrderID AS id, Customers.CompanyName AS customer, [Order Details].Quantity AS quantity, [Order Details].UnitPrice AS unitprice, [Order Details].Discount as discount FROM Orders 
-    JOIN Customers ON Orders.CustomerID = Customers.CustomerID JOIN [Order Details] ON Orders.OrderID = [Order Details].OrderID ORDER BY Orders.OrderID
+    JOIN Customers ON Orders.CustomerID = Customers.CustomerID JOIN [Order Details] ON Orders.OrderID = [Order Details].OrderID WHERE Orders.OrderID = {id} ORDER BY Orders.OrderID
     ''').fetchall()
     if data == None:
         raise HTTPException(status_code=404)
