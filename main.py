@@ -511,5 +511,5 @@ async def employees(limit: int, offset: int, order: str):
         raise HTTPException(status_code=400)
     columns = {'first_name' : 'FirstName', 'last_name' : 'LastName', 'city' : 'City'}
     order = columns[order]
-    data = app.db_connection.execute("SELECT EmployeeID, LastName, FirstName, City FROM Employees ORDER BY ? LIMIT ? OFFSET ?",(order, limit, offset, )).fetchall()
+    data = app.db_connection.execute(f"SELECT EmployeeID, LastName, FirstName, City FROM Employees ORDER BY {order} LIMIT ? OFFSET ?",(limit, offset, )).fetchall()
     return {"employees": [{"id": x['EmployeeID'],"last_name":x['LastName'],"first_name":x['FirstName'],"city":x['City']} for x in data]}
