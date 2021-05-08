@@ -524,3 +524,16 @@ async def products_extended():
     JOIN Categories ON Products.CategoryID = Categories.CategoryID JOIN Suppliers ON Products.SupplierID = Suppliers.SupplierID ORDER BY Products.ProductID
     ''').fetchall()
     return {"products_extended": [{"id": x['id'], "name": x['name'], "category": x['category'], "supplier": x['supplier']} for x in data]}
+
+# 4.5
+
+@app.get('/products/{id}/orders', status_code=200)
+async def products_id_orders(id: int):
+    app.db_connection.row_factory = sqlite3.Row # (UnitPrice x Quantity) - (Discount x (UnitPrice x Quantity))
+    data = app.db_connection.execute('''
+    SELECT Orders.OrderID AS id, Customers.CompanyName AS customer, [Order Details].Quantity AS quantity, [Order Details].UnitPrice AS unitprice, [Order Details].Discount as discount FROM Orders 
+    JOIN Customers ON Orders.CustomerID = Customers.CustomerID JOIN [Order Details] ON Orders.OrderID = [Order Details].OrderID ORDER BY Orders.OrderID
+    ''').fetchall()
+    if data == None:
+        raise HTTPException(status_code=404)
+    return {"orders": [{"id": x["id"], "customer": x["customer"], "quantity": x["quantity"], "total_price": round(((x['unitprice'] * x['quantity']) - (x['discount'] * (x['unitprice'] * x['quantity']))), 2)} for x in data]}
