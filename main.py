@@ -537,3 +537,33 @@ async def products_id_orders(id: int):
     if data == []:
         raise HTTPException(status_code=404) #
     return {"orders": [{"id": x["id"], "customer": x["customer"], "quantity": x["quantity"], "total_price": round(((x['unitprice'] * x['quantity']) - (x['discount'] * (x['unitprice'] * x['quantity']))), 2)} for x in data]}
+
+
+# 4.6
+@app.post('/categories', status_code=201)
+async def categories_post(json_data: dict):
+    name = json_data['name']
+    cur = app.db_connection.cursor()
+    cur.execute('INSERT INTO Categories (CategoryName) VALUES (?)',(name, ))
+    app.db_connection.commit()
+    id = cur.lastrowid
+    return {"id": id, "name": name}
+
+@app.put('/categories/{id}', status_code = 200)
+async def category_id_put(json_data: dict, id: int):
+    name = json_data['name']
+    data = app.db_connection.execute("SELECT CategoryID FROM Categories WHERE CategoryID = ?", (id,)).fetchone()
+    if data == None: # kategoria o podanym id nie istnieje
+        raise HTTPException(status_code=404)
+    app.db_connection.execute("UPDATE Categories SET CategoryName = ? WHERE CategoryID = ?", (name, id,))
+    app.db_connection.commit()
+    return {"id": id, "name": name}
+
+@app.delete('/categories/{id}', status_code=200)
+async def category_id_delete(id: int):
+    data = app.db_connection.execute("SELECT CategoryID FROM Categories WHERE CategoryID = ?", (id,)).fetchone()
+    if data == None: # kategoria o podanym id nie istnieje
+        raise HTTPException(status_code=404)
+    app.db_connection.execute('DELETE FROM Categories WHERE CategoryID = ?', (id, ))
+    app.db_connection.commit()
+    return {"deleted": 1}
