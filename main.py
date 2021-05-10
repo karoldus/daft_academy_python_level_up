@@ -487,7 +487,7 @@ async def categores():
 async def customers():
     app.db_connection.row_factory = sqlite3.Row
     data = app.db_connection.execute('''
-    SELECT CustomerID, CompanyName, (COALESCE(Address, '') || ' ' || COALESCE(PostalCode, '') || ' ' || COALESCE(City, '') || ' ' || COALESCE(Country, '')) AS full_address FROM Customers ORDER BY CustomerID
+    SELECT CustomerID, CompanyName, (COALESCE(Address, '') || ' ' || COALESCE(PostalCode, '') || ' ' || COALESCE(City, '') || ' ' || COALESCE(Country, '')) AS full_address FROM Customers
     ''').fetchall()
     return {"customers": [{"id": f"{x['CustomerID']}", "name": x["CompanyName"], "full_address": (x["full_address"])} for x in data]}
 
