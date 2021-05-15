@@ -56,7 +56,7 @@ async def suppliers_id_products(id: PositiveInt, db: Session = Depends(get_db)):
 async def suppliers_id_put(json_data: dict, id: PositiveInt, db: Session = Depends(get_db)):
     db_supplier = crud.get_supplier(db, id)
     if db_supplier is None:
-        raise HTTPException(status_code=401, detail="Supplier not found")
+        raise HTTPException(status_code=404, detail="Supplier not found")
     crud.put_supplier(json_data,db, id)
     return crud.get_supplier(db, id)
 
@@ -66,7 +66,7 @@ async def suppliers_id_put(json_data: dict, id: PositiveInt, db: Session = Depen
 async def suppliers_delete(id: PositiveInt, db: Session = Depends(get_db)):
     db_supplier = crud.get_supplier(db, id)
     if db_supplier is None:
-        raise HTTPException(status_code=401, detail="Supplier not found")
+        raise HTTPException(status_code=404, detail="Supplier not found")
     crud.delete_supplier(db, id)
     return 0
 
