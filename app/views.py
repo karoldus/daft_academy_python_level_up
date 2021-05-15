@@ -45,3 +45,16 @@ async def suppliers_id_products(id: PositiveInt, db: Session = Depends(get_db)):
     return crud.get_supplier_products(db, id)
 
 
+
+
+# 5.5
+
+@router.delete('/suppliers/{id}', status_code=204)
+async def suppliers_id_products(id: PositiveInt, db: Session = Depends(get_db)):
+    db_supplier = crud.get_supplier(db, id)
+    if db_supplier is None:
+        raise HTTPException(status_code=401, detail="Supplier not found")
+    crud.delete_supplier(db, id)
+    return 0
+
+
