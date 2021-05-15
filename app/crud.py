@@ -31,7 +31,7 @@ def get_supplier_products(db: Session, s_id: int):
     return [{"ProductID": x['ProductID'], "ProductName": x['ProductName'], "Category": {"CategoryID": x['CategoryID'], "CategoryName": x['CategoryName']}, "Discontinued": x['Discontinued']} for x in data]
 
 # 5.3
-def post_supplier(json_data: dict, db: Session, s_id: int):
+def post_supplier(json_data: dict, db: Session):
     db.add(models.Supplier(SupplierId = 13,CompanyName = json_data['CompanyName'],ContactName= json_data['ContactName'],ContactTitle= json_data['ContactTitle'],Address= json_data['Address'],City= json_data['City'],PostalCode= json_data['PostalCode'],Country= json_data['Country'],Phone= json_data['Phone'],Fax= None,HomePage= None))
     db.commit()
     #data=db.query(models.Supplier).Insert().values(json_data)
