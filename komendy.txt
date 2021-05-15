@@ -1,5 +1,0 @@
-cd C:\Users\karol\Desktop\DaftAcademy\aplikacja
-nazwa_virtual_env\Scripts\activate.bat
-uvicorn main:app
-pytest tests.py
-heroku logs -a da-plu-2021-karol-duszczyk
