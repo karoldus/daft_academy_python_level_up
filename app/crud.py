@@ -32,8 +32,8 @@ def get_supplier_products(db: Session, s_id: int):
 
 # 5.3
 def post_supplier(json_data: dict, db: Session, s_id: int):
-    #db.query(models.Supplier).insert().values(json_data)
-    return {"SupplierID": 12,"CompanyName": json_data['CompanyName'],"ContactName": json_data['ContactName'],"ContactTitle": json_data['ContactTitle'],"Address": json_data['Address'],"City": json_data['City'],"PostalCode": json_data['PostalCode'],"Country": json_data['Country'],"Phone": json_data['Phone'],"Fax": None,"HomePage": None}
+    data=db.query(models.Supplier).Insert().values(json_data)
+    return {"SupplierID": data['SupplierID'], "CompanyName": json_data['CompanyName'],"ContactName": data['ContactName'],"ContactTitle": json_data['ContactTitle'],"Address": json_data['Address'],"City": json_data['City'],"PostalCode": json_data['PostalCode'],"Country": json_data['Country'],"Phone": json_data['Phone'],"Fax": None,"HomePage": None}
 
 # 5.4
 def put_supplier(json_data: dict, db: Session, s_id: int):
