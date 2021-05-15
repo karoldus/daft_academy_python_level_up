@@ -57,7 +57,8 @@ async def suppliers_id_put(json_data: dict, id: PositiveInt, db: Session = Depen
     db_supplier = crud.get_supplier(db, id)
     if db_supplier is None:
         raise HTTPException(status_code=401, detail="Supplier not found")
-    return crud.put_supplier(json_data,db, id)
+    crud.put_supplier(json_data,db, id)
+    return crud.get_supplier(db, id)
 
 # 5.5
 
