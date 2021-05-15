@@ -32,7 +32,7 @@ def get_supplier_products(db: Session, s_id: int):
 
 # 5.3
 def post_supplier(json_data: dict, db: Session, s_id: int):
-    db.query(models.Supplier).insert().values([json_data])
+    db.query(models.Supplier).insert().values(json_data)
     return json_data
 
 # 5.4
