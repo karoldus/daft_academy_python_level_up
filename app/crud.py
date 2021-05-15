@@ -22,9 +22,16 @@ def get_supplier(db: Session, s_id: int):
         db.query(models.Supplier).filter(models.Supplier.SupplierID == s_id).first()
     )
 
+# 5.2
 def get_supplier_products(db: Session, s_id: int):
     data = db.query(models.Product.ProductID, models.Product.ProductName, models.Product.CategoryID, models.Category.CategoryName, models.Product.Discontinued).join(models.Supplier, models.Supplier.SupplierID==models.Product.SupplierID).join(models.Category, models.Category.CategoryID==models.Product.CategoryID).filter(models.Supplier.SupplierID == s_id).order_by(models.Product.ProductID.desc()).all()
     #db.query(models.Product.ProductID, models.Product.ProductName, models.Product.CategoryID, models.Category.CategoryName, models.Product.Discontinued).join(models.Supplier, models.Supplier.SupplierID==models.Product.SupplierID).join(models.Category, models.Category.CategoryID==models.Product.CategoryID).filter(models.Supplier.SupplierID == s_id).order_by(models.Product.ProductID.desc()).all()
     #stm = sqlalchemy.text('SELECT Products.ProductID, Products.ProductName, Products.CategoryID, Categories.CategoryName, Products.Discontinued')
     #db.query(models.Product).from_statement(stm).join(models.Supplier, models.Supplier.SupplierID==models.Product.SupplierID).join(models.Category, models.Category.CategoryID==models.Product.CategoryID).filter(models.Supplier.SupplierID == s_id).order_by(models.Product.ProductID.desc()).all()
     return [{"ProductID": x['ProductID'], "ProductName": x['ProductName'], "Category": {"CategoryID": x['CategoryID'], "CategoryName": x['CategoryName']}, "Discontinued": x['Discontinued']} for x in data]
+
+# 5.5
+def delete_supplier(db: Session, s_id: int):
+    return (
+        db.query(models.Supplier).filter(models.Supplier.SupplierID == s_id).delete()
+    )
