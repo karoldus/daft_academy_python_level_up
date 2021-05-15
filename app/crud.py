@@ -23,9 +23,8 @@ def get_supplier(db: Session, s_id: int):
     )
 
 def get_supplier_products(db: Session, s_id: int):
-    return (
-        #db.query(models.Product.ProductID, models.Product.ProductName, models.Product.CategoryID, models.Category.CategoryName, models.Product.Discontinued).join(models.Supplier, models.Supplier.SupplierID==models.Product.SupplierID).join(models.Category, models.Category.CategoryID==models.Product.CategoryID).filter(models.Supplier.SupplierID == s_id).order_by(models.Product.ProductID.desc()).all()
-        #db.query(models.Product.ProductID, models.Product.ProductName, models.Product.CategoryID, models.Category.CategoryName, models.Product.Discontinued).join(models.Supplier, models.Supplier.SupplierID==models.Product.SupplierID).join(models.Category, models.Category.CategoryID==models.Product.CategoryID).filter(models.Supplier.SupplierID == s_id).order_by(models.Product.ProductID.desc()).all()
-        stm = sqlalchemy.text('SELECT Products.ProductID, Products.ProductName, Products.CategoryID, Categories.CategoryName, Products.Discontinued')
-        db.query(models.Product).from_statement(stm).join(models.Supplier, models.Supplier.SupplierID==models.Product.SupplierID).join(models.Category, models.Category.CategoryID==models.Product.CategoryID).filter(models.Supplier.SupplierID == s_id).order_by(models.Product.ProductID.desc()).all()
-    )
+    data = db.query(models.Product.ProductID, models.Product.ProductName, models.Product.CategoryID, models.Category.CategoryName, models.Product.Discontinued).join(models.Supplier, models.Supplier.SupplierID==models.Product.SupplierID).join(models.Category, models.Category.CategoryID==models.Product.CategoryID).filter(models.Supplier.SupplierID == s_id).order_by(models.Product.ProductID.desc()).all()
+    #db.query(models.Product.ProductID, models.Product.ProductName, models.Product.CategoryID, models.Category.CategoryName, models.Product.Discontinued).join(models.Supplier, models.Supplier.SupplierID==models.Product.SupplierID).join(models.Category, models.Category.CategoryID==models.Product.CategoryID).filter(models.Supplier.SupplierID == s_id).order_by(models.Product.ProductID.desc()).all()
+    #stm = sqlalchemy.text('SELECT Products.ProductID, Products.ProductName, Products.CategoryID, Categories.CategoryName, Products.Discontinued')
+    #db.query(models.Product).from_statement(stm).join(models.Supplier, models.Supplier.SupplierID==models.Product.SupplierID).join(models.Category, models.Category.CategoryID==models.Product.CategoryID).filter(models.Supplier.SupplierID == s_id).order_by(models.Product.ProductID.desc()).all()
+    return [{"ProductID": x['ProductID'], "ProductName": x['ProductName']} for x in data] #, "Category": {"CategoryID": 6, "CategoryName": "Meat/Poultry"}, "Discontinued": 1
