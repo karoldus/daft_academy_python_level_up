@@ -48,7 +48,9 @@ async def suppliers_id_products(id: PositiveInt, db: Session = Depends(get_db)):
 # 5.3
 @router.post('/suppliers', status_code=201)
 async def suppliers_post(json_data: dict, db: Session = Depends(get_db)):
-    return crud.post_supplier(json_data, db, id)
+    #return crud.post_supplier(json_data, db)
+    crud.post_supplier(json_data, db)
+    return crud.get_supplier(db, 13)
 
 # 5.4
 @router.put('/suppliers/{id}', status_code=200)
