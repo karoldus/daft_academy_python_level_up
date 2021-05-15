@@ -21,3 +21,16 @@ async def get_shipper(shipper_id: PositiveInt, db: Session = Depends(get_db)):
 @router.get("/shippers", response_model=List[schemas.Shipper])
 async def get_shippers(db: Session = Depends(get_db)):
     return crud.get_shippers(db)
+
+
+@router.get('/suppliers', status_code=200)
+async def suppliers(db: Session = Depends(get_db)):
+    return crud.get_suppliers(db)
+    
+
+@router.get('/suppliers/{id}', status_code=200)
+async def suppliers_id(id: PositiveInt, db: Session = Depends(get_db)):
+    db_supplier = crud.get_supplier(db, id)
+    if db_supplier is None:
+        raise HTTPException(status_code=404, detail="Supplier not found")
+    return db_supplier
