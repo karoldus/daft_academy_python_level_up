@@ -30,6 +30,10 @@ def get_supplier_products(db: Session, s_id: int):
     #db.query(models.Product).from_statement(stm).join(models.Supplier, models.Supplier.SupplierID==models.Product.SupplierID).join(models.Category, models.Category.CategoryID==models.Product.CategoryID).filter(models.Supplier.SupplierID == s_id).order_by(models.Product.ProductID.desc()).all()
     return [{"ProductID": x['ProductID'], "ProductName": x['ProductName'], "Category": {"CategoryID": x['CategoryID'], "CategoryName": x['CategoryName']}, "Discontinued": x['Discontinued']} for x in data]
 
+# 5.3
+def post_supplier(json_data: dict, db: Session, s_id: int):
+    db.insert().values([json_data])
+    return json_data
 
 # 5.4
 def put_supplier(json_data: dict, db: Session, s_id: int):
