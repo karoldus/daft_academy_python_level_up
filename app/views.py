@@ -34,3 +34,14 @@ async def suppliers_id(id: PositiveInt, db: Session = Depends(get_db)):
     if db_supplier is None:
         raise HTTPException(status_code=404, detail="Supplier not found")
     return db_supplier
+
+# 5.2
+
+@router.get('/suppliers/{id}/products', status_code=200)
+async def suppliers_id_products(id: PositiveInt, db: Session = Depends(get_db)):
+    db_supplier = crud.get_supplier(db, id)
+    if db_supplier is None:
+        raise HTTPException(status_code=404, detail="Supplier not found")
+    return crud.get_supplier_products(db, id)
+
+
