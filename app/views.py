@@ -51,6 +51,13 @@ async def suppliers_id_products(id: PositiveInt, db: Session = Depends(get_db)):
     
 #     return db_supplier
 
+# 5.4
+@router.put('/suppliers/{id}', status_code=200)
+async def suppliers_id_put(json_data: dict, id: PositiveInt, db: Session = Depends(get_db)):
+    db_supplier = crud.get_supplier(db, id)
+    if db_supplier is None:
+        raise HTTPException(status_code=401, detail="Supplier not found")
+    return crud.put_supplier(json_data,db, id)
 
 # 5.5
 
