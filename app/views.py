@@ -45,12 +45,17 @@ async def suppliers_id_products(id: PositiveInt, db: Session = Depends(get_db)):
     return crud.get_supplier_products(db, id)
 
 
+# 5.3
+# @router.post('/suppliers', status_code=201)
+# async def suppliers_post(json_data: dict, db: Session = Depends(get_db)):
+    
+#     return db_supplier
 
 
 # 5.5
 
 @router.delete('/suppliers/{id}', status_code=204)
-async def suppliers_id_products(id: PositiveInt, db: Session = Depends(get_db)):
+async def suppliers_delete(id: PositiveInt, db: Session = Depends(get_db)):
     db_supplier = crud.get_supplier(db, id)
     if db_supplier is None:
         raise HTTPException(status_code=401, detail="Supplier not found")
